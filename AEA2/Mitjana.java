@@ -14,3 +14,5 @@ public class Mitjana {
         System.out.println("La mitana dels numeros es: " + mja);
     }
 }
+
+
