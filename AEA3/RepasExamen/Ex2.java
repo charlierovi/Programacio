@@ -16,13 +16,10 @@ public class Ex2 {
         for(int i = 0; i < matriu.length; i++) {
             for(int j = 0; j < columnes; j++) {
                 matriu[i][j] = random.nextInt(11);
-            }
-        }
-        for(int i = 0; i < matriu.length; i++) {
-            for(int j = 0; j < columnes; j++) {
                 System.out.print(matriu[i][j] + "\t");
             }
             System.out.println();
         }
     }
 }
+

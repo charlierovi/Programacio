@@ -8,9 +8,9 @@ public class Ex1 {
             for(int j = 0; j < matriu[i].length; j++) {
                 matriu[i][j] = contador;
                 contador++;
-                System.out.print(matriu[i][j] + " ");
+                System.out.print(matriu[i][j] + "\t");
             }
-            System.out.println(" ");
+            System.out.println();
         }
     }
 }
