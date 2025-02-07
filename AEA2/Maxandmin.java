@@ -1,10 +1,7 @@
-import java.util.*;
 public class Maxandmin {
     public static void main(String[] args) {
     
         int nums[] = {12, 3, 45, -3, 65, -5, 88, 99, 2, 23, 54, 33, 27, 53, 96, 0};
-
-        Arrays.sort(nums);
 
         int lowestNum = nums[0];
 
