@@ -13,6 +13,7 @@ public class LectorDatosTerminal {
             } 
             else {
                 s.next();
+                System.out.println("Error: Entrada no válida.");
             }
         }
         return 0;
@@ -28,6 +29,7 @@ public class LectorDatosTerminal {
             } 
             else {
                 s.next();
+                System.out.println("Error: Entrada no válida.");
             }
         }
         return 0;
@@ -43,6 +45,7 @@ public class LectorDatosTerminal {
             } 
             else {
                 s.next();
+                System.out.println("Error: Entrada no válida.");
             }
         }
         return 0;
