@@ -24,7 +24,6 @@ public class Habitacio extends Allotjament {
 
     @Override
     public double Calcular_Preu_Nit() {
-        super.Calcular_Preu_Nit();
         if (getNum_llits() > 2) {       //Si té més de 2 llits
             return 50 + (getNum_llits() * 20);
         }

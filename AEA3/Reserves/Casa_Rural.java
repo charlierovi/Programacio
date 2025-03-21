@@ -34,7 +34,6 @@ public class Casa_Rural extends Allotjament{
 
     @Override
     public double Calcular_Preu_Nit() {
-        super.Calcular_Preu_Nit();
         if (te_Piscina) {       //Si té piscina
             return 150 + 50;
         }

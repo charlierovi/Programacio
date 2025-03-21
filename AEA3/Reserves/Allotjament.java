@@ -38,7 +38,7 @@ public abstract class Allotjament {
     }
 
     public double Calcular_Preu_Nit() {
-        return 0;
+        return 50;
     }
 
     public String Mostrar_Informacio() {

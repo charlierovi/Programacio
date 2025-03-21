@@ -34,7 +34,6 @@ public class Apartament extends Allotjament{
 
     @Override
     public double Calcular_Preu_Nit() {
-        super.Calcular_Preu_Nit();
         return 100 + (getHabitacions() * 10);
     }
 

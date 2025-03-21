@@ -91,8 +91,15 @@ public class Main_Sistema_Reserves {
                     System.out.println("Quin allotjament vol reservar?:");
                     String nomReserva = lector.leerString();
                     boolean reservat = false;
+
                     for (int i = 0; i < index; i++) {
                         if (allotjaments[i].getNom().equalsIgnoreCase(nomReserva) && allotjaments[i].isDisponible()) {      // Recorrem les posicións amb allotjaments disponibles
+                            System.out.println("Quantes nits vols reservar?");
+                            int numNits = lector.leerInt();
+
+                            double preuTotal = allotjaments[i].Calcular_Preu_Nit() * numNits;
+                            System.out.println("Preu total per " + numNits + " nits: " + preuTotal + " euros.");
+                            
                             allotjaments[i].setDisponible(false);
                             System.out.println("Allotjament reservat amb èxit!");
                             reservat = true;
