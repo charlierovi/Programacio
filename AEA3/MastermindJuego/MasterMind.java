@@ -1,124 +1,97 @@
 package AEA3.MastermindJuego;
+
+import java.util.Arrays;
 import java.util.Scanner;
 
-//Un programa per jugar al MasterMind.
 public class MasterMind {
-    //Constants
-    public final static char TOT_CORRECTE = '0';
-    public final static char MALA_POSICIO = 'X';
-    public final static char INCORRECTE = '-';
-    public final static String ENCERTAT = "OOO";
-    public final int LONG_SECRET = 3;
-    public final static String abc = "abcdefghijklmnopqrstuvwxyz";
-    public static String secret = "";
-    public static String resposta = "";
+    private final CodeGenerator codeGenerator;
+    private final Feedback feedback;
+    private final Scanner scanner;
+    private int codeLength;
+    private boolean isChild;
 
-    //Mètodes associats al problema general
-    public static void main(String[] args) {
-        MasterMind programa = new MasterMind();
-        programa.inici();
+    public MasterMind() {
+        this.codeGenerator = new CodeGenerator();
+        this.feedback = new Feedback();
+        this.scanner = new Scanner(System.in);
     }
 
     public void inici() {
-        secret = generarParaulaSecreta();
-        boolean encertat = false;
-        while (!encertat) {
-            resposta = preguntarResposta();
-            encertat = resoldreResposta(secret, resposta);
-        }
+        determinarEdatJugador();
+        this.codeLength = isChild ? 3 : 5;
+
+        String[] paraulesRobot = isChild ? CodeGenerator.PARAULES_NENS : CodeGenerator.PARAULES_ADULTS;
+        
+        Player humanPlayer = new HumanPlayer(codeLength);
+        Player robot = new Robot(codeLength, paraulesRobot); 
+        
+        jugarPartida(humanPlayer, robot);
     }
 
-
-    //Mètodes associats al primer nivell de descomposició
-    //Param. entrada: cap, tot s’obté de generarLletraAleatoria
-    //Param. sortida: una paraula de 3 lletres (un String)
-    public String generarParaulaSecreta() {
-        String res = "";
-        for (int i = 0; i < LONG_SECRET; i++) {
-            res = res + generarLletraAleatoria();
-        }
-        return res;
-    }
-
-    //Param. entrada: cap, tot s’obté del teclat
-    // Param. sortida: la paraula de resposta (un String)
-    public String preguntarResposta() {
-        Scanner lector = new Scanner(System.in);
-        boolean lecturaOk = false;
-        String res = null;
-        do {
-            System.out.print("Escriu " + LONG_SECRET + " lletres miníscules: ");
-            res = lector.next();
-            lector.nextLine();
-            lecturaOk = comprovarResposta(res);
-            if (!lecturaOk) {
-                System.out.println("Aquesta resposta no és vàlida!");
-            }
-        } while (!lecturaOk);
-        return res;
-    }
-
-    //Param. entrada: la resposta i el valor secret (dos String)
-    //Param. sortida: si s’ha encertat (un booleà)
-    public boolean resoldreResposta(String secret, String resposta) {
-        String res = generarPista(secret, resposta);
-        boolean fi = false;
-        System.out.print("La resposta és [" + res + "]. ");
-        if (resposta.equals(secret)){
-            System.out.println("Has encertat!");
-            fi = true;
-        } else {
-            System.out.println("Continua intentant!");
-        }
-        return fi;
-    }
-
-    //Mètodes associats al segon nivell de descomposició
-    //Param. entrada: cap
-    //Param. sortida: una lletra (un caràcter)
-    public char generarLletraAleatoria() {
-        long nano = System.nanoTime();
-        int index = (int) (nano % abc.length());
-        return abc.charAt(index);
-    }
-
-    //Param. entrada: text a comprovar
-    //Param. sortida: si és correcte o no (un booleà. true = correcte)
-    public boolean comprovarResposta(String resposta) {
-        if (resposta.length() != LONG_SECRET) {
-        //Ja sabem que no és correcte.
-        //Podem acabar l’execució del mètode immediatament.
-            return false;
-        }
-        for (int i = 0; i < resposta.length(); i++) {
-            char c = resposta.charAt(i);
-            if ( -1 == abc.indexOf(c)){
-            //Ja sabem que no és correcte.
-            //Podem acabar l’execució del mètode immediatament.
-                return false;
+    private void determinarEdatJugador() {
+        System.out.println("Ets un nen o un adult?");
+        System.out.println("1. Nen - Paraules de 3 lletres");
+        System.out.println("2. Adult - Paraules de 5 lletres");
+        
+        int opcio = 0;
+        while(opcio != 1 && opcio != 2) {
+            System.out.print("Selecciona 1 o 2: ");
+            try {
+                opcio = Integer.parseInt(scanner.nextLine());
+            } 
+            catch (NumberFormatException e) {
+                System.out.println("Si us plau, indica 1 o 2.");
             }
         }
-        //Si tot es compleix, segur que és correcte
-        return true;
+        
+        this.isChild = (opcio == 1);
     }
 
-    //Param. entrada: la resposta i el secret que cal comparar (text)
-    //Param. sortida: la pista que cal mostrar (un text)
-    public String generarPista(String s, String r) {
-        String res = "";
-        for (int i = 0; i < s.length(); i++) {
-            char charSecret = s.charAt(i);
-            char charResposta = r.charAt(i);
-            if (charSecret == charResposta) {
-                res = res + TOT_CORRECTE;
+    private void jugarPartida(Player humanPlayer, Player robot) {
+        String secretCode = codeGenerator.generateCode(isChild);
+        System.out.println("\nComença el joc! Endevina la paraula de " + codeLength + " lletres.");
+        System.out.println("Possibles paraules: " + 
+                      (isChild ? Arrays.toString(CodeGenerator.PARAULES_NENS) 
+                              : Arrays.toString(CodeGenerator.PARAULES_ADULTS)));
+        
+        int intents = 0;
+        boolean jocAcabat = false;
+        
+        while (!jocAcabat) {
+            intents++;
+            
+            // Turno del jugador humano
+            System.out.println("\nTorn " + intents + " - Jugador: ");
+            String intentHuma = humanPlayer.makeGuess();
+            
+            if (intentHuma.equalsIgnoreCase(secretCode)) {
+                System.out.println("\nFelicitats! Has endevinat la paraula en " + intents + " intents!");
+                System.out.println("La paraula era: " + secretCode);
+                jocAcabat = true;
+                continue;
             }
-            else if (s.indexOf(charResposta) != - 1){
-                res = res + MALA_POSICIO;
+            
+            String feedbackHuma = feedback.getFeedback(secretCode, intentHuma);
+            System.out.println("Pista: " + feedbackHuma);
+            
+            // Turno del robot
+            System.out.println("\nTorn " + intents + " - Robot:");
+            String intentRobot = robot.makeGuess();
+            
+            if (intentRobot.equalsIgnoreCase(secretCode)) {
+                System.out.println("\nEl robot ha guanyat! GAME OVER!");
+                System.out.println("La paraula era: " + secretCode);
+                jocAcabat = true;
+                continue;
             }
-            else {
-                res = res + INCORRECTE;
-            }
+            
+            String feedbackRobot = feedback.getFeedback(secretCode, intentRobot);
+            System.out.println("Pista: " + feedbackRobot);
         }
-        return res;
+    }
+
+    public static void main(String[] args) {
+        MasterMind juego = new MasterMind();
+        juego.inici();
     }
 }

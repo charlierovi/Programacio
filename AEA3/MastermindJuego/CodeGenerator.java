@@ -3,17 +3,21 @@ package AEA3.MastermindJuego;
 import java.util.Random;
 
 public class CodeGenerator {
-    private static final int CODE_LENGHT = 3;
-    private static final String ALPHABET = "abcdefghijklmnopqrstuvwxyz";
+    public static final String[] PARAULES_NENS = {
+        "sol", "mar", "peu", "ull", "nen", "riu", "gos", "nou", "llum", "viu"
+    };
+    
+    public static final String[] PARAULES_ADULTS = {
+        "arbre", "flors", "taula", "llibre", "corda", "porta", "mirar", "tecla", "tocar", "cotxe"
+    };
+    
+    private final Random random = new Random();
 
-    public String generateCode() {
-        Random random = new Random();
-        StringBuilder code = new StringBuilder();
-
-        for(int i=0; i<CODE_LENGHT; i++) {
-            int index=random.nextInt(ALPHABET.length());
-            code.append(ALPHABET.charAt(index));
+    public String generateCode(boolean isChild) {
+        if (isChild) {
+            return PARAULES_NENS[random.nextInt(PARAULES_NENS.length)];
+        } else {
+            return PARAULES_ADULTS[random.nextInt(PARAULES_ADULTS.length)];
         }
-        return code.toString();
     }
 }
